@@ -1,82 +1,61 @@
+// Reads all .md files from src/content/portfolio/ at build time.
+// To add a project, create a new .md file in that folder.
+
+function parseFrontMatter(raw) {
+	const fence = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
+	if (!fence) return { meta: {}, body: raw };
+
+	const meta = {};
+	const lines = fence[1].split('\n');
+	let arrayKey = null;
+
+	for (const line of lines) {
+		if (!line.trim()) continue;
+		if (/^[a-zA-Z_-]+:/.test(line)) {
+			arrayKey = null;
+			const idx = line.indexOf(':');
+			const key = line.slice(0, idx).trim();
+			const val = line.slice(idx + 1).trim();
+			if (!val) {
+				arrayKey = key;
+				meta[key] = [];
+			} else if (val === 'true') meta[key] = true;
+			else if (val === 'false') meta[key] = false;
+			else if (val !== '' && !isNaN(val)) meta[key] = Number(val);
+			else meta[key] = val;
+		} else if (line.trim().startsWith('- ') && arrayKey) {
+			meta[arrayKey].push(line.trim().slice(2));
+		}
+	}
+
+	return { meta, body: fence[2].trim() };
+}
+
+const rawFiles = import.meta.glob('/src/content/portfolio/*.md', { eager: true, query: '?raw', import: 'default' });
+
+export const projects = Object.entries(rawFiles)
+	.map(([path, raw]) => {
+		const slug = path.split('/').pop().replace('.md', '');
+		const { meta, body } = parseFrontMatter(raw);
+		return {
+			slug,
+			title: meta.title ?? slug,
+			category: meta.category ?? 'otro',
+			year: meta.year ?? 0,
+			thumbnail: meta.thumbnail ?? '',
+			images: Array.isArray(meta.images) ? meta.images : meta.thumbnail ? [meta.thumbnail] : [],
+			location: meta.location ?? '',
+			collaborators: meta.collaborators ?? '',
+			description: body,
+			featured: meta.featured ?? false
+		};
+	})
+	.sort((a, b) => b.year - a.year);
+
 export const categories = [
 	{ id: 'todo', label: 'Todo' },
 	{ id: 'escenografia', label: 'Escenografía' },
 	{ id: 'instalacion', label: 'Instalación' },
 	{ id: 'pintura', label: 'Pintura' },
 	{ id: 'otro', label: 'Otro' }
-];
-
-export const projects = [
-	{
-		slug: 'fragmentos-del-habitar',
-		title: 'Fragmentos del Habitar',
-		category: 'escenografia',
-		year: 2025,
-		thumbnail: '/images/portfolio/placeholder-1.jpg',
-		images: ['/images/portfolio/placeholder-1.jpg'],
-		location: 'Teatro Municipal, Santiago',
-		collaborators: '',
-		description: 'Diseño escénico que explora la relación entre el espacio doméstico y la memoria colectiva. Una propuesta visual que fragmenta y reconstruye los elementos del habitar cotidiano.',
-		featured: true
-	},
-	{
-		slug: 'territorios-invisibles',
-		title: 'Territorios Invisibles',
-		category: 'instalacion',
-		year: 2024,
-		thumbnail: '/images/portfolio/placeholder-2.jpg',
-		images: ['/images/portfolio/placeholder-2.jpg'],
-		location: 'Galería Patricia Ready, Santiago',
-		collaborators: '',
-		description: 'Instalación site-specific que cartografía las fronteras invisibles de la ciudad a través de materiales textiles y luz. Un diálogo entre lo visible y lo oculto del paisaje urbano.',
-		featured: true
-	},
-	{
-		slug: 'cuerpo-paisaje',
-		title: 'Cuerpo Paisaje',
-		category: 'pintura',
-		year: 2024,
-		thumbnail: '/images/portfolio/placeholder-3.jpg',
-		images: ['/images/portfolio/placeholder-3.jpg'],
-		location: 'Centro Cultural Gabriela Mistral (GAM)',
-		collaborators: '',
-		description: 'Serie pictórica que investiga la intersección entre el cuerpo humano y el paisaje natural chileno. Técnica mixta sobre tela de gran formato.',
-		featured: true
-	},
-	{
-		slug: 'la-casa-de-bernarda-alba',
-		title: 'La Casa de Bernarda Alba',
-		category: 'escenografia',
-		year: 2023,
-		thumbnail: '/images/portfolio/placeholder-4.jpg',
-		images: ['/images/portfolio/placeholder-4.jpg'],
-		location: 'Teatro Nacional Chileno',
-		collaborators: 'Director: María González',
-		description: 'Escenografía para la obra de Federico García Lorca. Un espacio cerrado y opresivo construido con muros blancos que gradualmente se tiñen, reflejando la tensión dramática de la obra.',
-		featured: true
-	},
-	{
-		slug: 'ecos-materiales',
-		title: 'Ecos Materiales',
-		category: 'instalacion',
-		year: 2023,
-		thumbnail: '/images/portfolio/placeholder-5.jpg',
-		images: ['/images/portfolio/placeholder-5.jpg'],
-		location: 'Museo de Arte Contemporáneo, Santiago',
-		collaborators: '',
-		description: 'Instalación sonora y visual que transforma desechos industriales en instrumentos resonantes. Una reflexión sobre la materialidad y el ciclo de vida de los objetos.',
-		featured: true
-	},
-	{
-		slug: 'ritual-cotidiano',
-		title: 'Ritual Cotidiano',
-		category: 'otro',
-		year: 2023,
-		thumbnail: '/images/portfolio/placeholder-6.jpg',
-		images: ['/images/portfolio/placeholder-6.jpg'],
-		location: 'Festival de Artes Escénicas, Valparaíso',
-		collaborators: '',
-		description: 'Performance y video-arte que documenta y reinterpreta los gestos repetitivos de la vida doméstica como actos ceremoniales.',
-		featured: false
-	}
 ];
