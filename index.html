@@ -1,0 +1,1131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=1280"/>
+<title>Paz Tobar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hifi.css">
+<style>
+body { overflow-x: hidden; }
+
+/* --- Landing --- */
+.hero-wrap { position:relative; height:100vh; overflow:hidden; }
+.hero-bg {
+  position:absolute; inset:0;
+  background-size:cover; background-position:center;
+  transition: opacity 1.6s ease-in-out;
+  filter: grayscale(0.25) contrast(1.05);
+}
+.hero-overlay {
+  position:absolute; inset:0;
+  background: linear-gradient(180deg,
+    rgba(10,9,8,0.28) 0%,
+    rgba(10,9,8,0.08) 35%,
+    rgba(10,9,8,0.72) 80%,
+    rgba(10,9,8,0.95) 100%
+  );
+}
+.hero-content {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding:0 48px 56px;
+  z-index:2;
+}
+.hero-meta-bar {
+  display:flex; justify-content:space-between; align-items:flex-end;
+}
+.pill {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:7px 14px;
+  border:1px solid rgba(244,241,234,0.25);
+  backdrop-filter:blur(6px);
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--ink-dim);
+}
+.pill .dot { width:6px; height:6px; border-radius:3px; background:var(--accent); animation: pulse 3s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* Slide dots */
+.slide-dots { display:flex; gap:8px; }
+.slide-dot {
+  width:22px; height:2px;
+  background:rgba(244,241,234,0.28);
+  border:none; padding:0; cursor:pointer;
+  transition:background 300ms, width 300ms;
+}
+.slide-dot.is-active { background:var(--accent); width:38px; }
+
+/* Marquee strip */
+.marquee-strip {
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  background:rgba(10,9,8,0.72);
+  backdrop-filter:blur(6px);
+  overflow:hidden; padding:16px 0;
+}
+.marquee-inner { display:flex; gap:64px; animation:marquee 70s linear infinite; white-space:nowrap; }
+@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.marquee-item {
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px; letter-spacing:0.26em; text-transform:uppercase;
+  color:var(--ink-dim);
+  display:inline-flex; align-items:center; gap:24px;
+}
+.marquee-item span { color:var(--ink-mute); }
+.marquee-divider { color:var(--line-2); }
+
+/* --- Nav --- */
+.site-nav {
+  position:fixed; top:0; left:0; right:0; z-index:60;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:24px 48px;
+  transition: background 400ms, backdrop-filter 400ms, border-color 400ms, padding 400ms;
+  border-bottom:1px solid transparent;
+}
+.site-nav.scrolled {
+  background:rgba(10,9,8,0.82);
+  backdrop-filter:blur(12px) saturate(140%);
+  -webkit-backdrop-filter:blur(12px) saturate(140%);
+  border-bottom-color:var(--line);
+  padding:18px 48px;
+}
+.site-nav .brand {
+  font-family:'JetBrains Mono',monospace;
+  font-weight:700; font-size:12px;
+  letter-spacing:0.32em; text-transform:uppercase;
+  color:var(--ink); cursor:pointer;
+}
+.site-nav ul { list-style:none; margin:0; padding:0; display:flex; gap:36px; }
+.site-nav a {
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px; letter-spacing:0.22em; text-transform:uppercase;
+  color:var(--ink-dim); text-decoration:none;
+  position:relative;
+  transition:color 200ms;
+}
+.site-nav a.is-active { color:var(--ink); }
+.site-nav a.is-active::after {
+  content:''; position:absolute; bottom:-5px; left:0; right:0;
+  height:1px; background:var(--accent);
+}
+.site-nav a:hover { color:var(--accent); }
+
+/* --- Page transitions --- */
+.page-view { opacity:0; transition:opacity 500ms ease; }
+.page-view.is-shown { opacity:1; }
+
+/* --- Portfolio --- */
+.pf-grid {
+  display:grid; grid-template-columns:260px 1fr;
+  min-height:calc(100vh - 0px);
+}
+.pf-sidebar {
+  position:sticky; top:0; height:100vh;
+  overflow-y:auto; overflow-x:hidden;
+  border-right:1px solid var(--line);
+  padding:0;
+  background:var(--bg);
+  scrollbar-width:none;
+}
+.pf-sidebar::-webkit-scrollbar { display:none; }
+.pf-sidebar-head {
+  padding:90px 28px 24px;
+  border-bottom:1px solid var(--line);
+}
+.work-item {
+  padding:20px 28px;
+  border-bottom:1px solid var(--line);
+  cursor:pointer;
+  transition:background 200ms;
+  position:relative;
+}
+.work-item:hover { background:var(--bg-2); }
+.work-item.is-active { background:var(--bg-2); }
+.work-item.is-active::before {
+  content:''; position:absolute; left:0; top:0; bottom:0;
+  width:2px; background:var(--accent);
+}
+.work-num {
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px; color:var(--ink-mute);
+  letter-spacing:0.2em; text-transform:uppercase;
+  margin-bottom:6px;
+}
+.work-title { font-size:16px; letter-spacing:-0.01em; line-height:1.2; }
+.work-year {
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px; color:var(--ink-mute); margin-top:5px;
+}
+
+.case-study { padding-bottom:80px; }
+.case-hero {
+  position:relative; height:88vh;
+  overflow:hidden;
+}
+.case-hero-img {
+  position:absolute; inset:0;
+  background-size:cover; background-position:center;
+  filter:grayscale(0.15) contrast(1.05);
+}
+.case-hero-overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(10,9,8,0.1) 0%, rgba(10,9,8,0.8) 100%);
+}
+.case-hero-text {
+  position:absolute; bottom:0; left:0; right:0;
+  padding:56px 56px 48px;
+}
+.case-meta-grid {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:0;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+.case-meta-cell {
+  padding:24px 32px;
+  border-right:1px solid var(--line);
+}
+.case-meta-cell:last-child { border-right:none; }
+.case-meta-label {
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px; color:var(--ink-mute);
+  letter-spacing:0.22em; text-transform:uppercase; margin-bottom:8px;
+}
+.case-meta-value { font-size:15px; color:var(--ink); }
+
+/* Gallery */
+.gallery-grid {
+  display:grid; gap:3px;
+}
+.gallery-grid.cols-2 { grid-template-columns:2fr 1fr; }
+.gallery-grid.cols-3 { grid-template-columns:repeat(3,1fr); }
+.gallery-img {
+  aspect-ratio:16/10;
+  background-size:cover; background-position:center;
+  filter:grayscale(0.1);
+  transition:filter 400ms, transform 400ms;
+  overflow:hidden;
+}
+.gallery-img:hover { filter:none; }
+
+/* --- About --- */
+.about-statement {
+  padding:160px 48px 72px;
+  border-bottom:1px solid var(--line);
+}
+.about-body {
+  display:grid; grid-template-columns:1.1fr 1fr;
+  gap:56px;
+  padding:80px 48px;
+}
+.resume-row {
+  display:grid; grid-template-columns:64px 2fr 1.2fr;
+  gap:20px;
+  padding:16px 0;
+  border-bottom:1px solid var(--line);
+  align-items:baseline;
+}
+
+/* --- Contact --- */
+.contact-grid {
+  display:grid; grid-template-columns:1fr 1.1fr;
+  min-height:calc(100vh - 80px);
+}
+.contact-img {
+  position:relative;
+  background-size:cover; background-position:center;
+  filter:grayscale(0.3) contrast(1.05);
+  overflow:hidden;
+}
+.contact-img-overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(45deg, rgba(10,9,8,0.7) 0%, rgba(10,9,8,0.15) 100%);
+}
+.contact-form { padding:80px 56px; }
+.contact-links { margin-bottom:48px; }
+.contact-link-row {
+  display:grid; grid-template-columns:110px 1fr;
+  gap:16px;
+  padding:18px 0;
+  border-bottom:1px solid var(--line);
+  align-items:baseline;
+}
+.contact-link-key {
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px; color:var(--ink-mute);
+  letter-spacing:0.24em; text-transform:uppercase;
+}
+.contact-link-val {
+  font-size:18px; color:var(--ink); text-decoration:none;
+  transition:color 200ms;
+}
+a.contact-link-val:hover { color:var(--accent); }
+.form-field {
+  padding:18px 0; border-bottom:1px solid var(--line);
+  margin-bottom:0;
+}
+.form-label {
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px; color:var(--ink-mute);
+  letter-spacing:0.22em; text-transform:uppercase;
+  display:block; margin-bottom:8px;
+}
+.form-input, .form-textarea {
+  width:100%; background:transparent; border:none;
+  color:var(--ink); font-family:inherit; font-size:17px;
+  outline:none; padding:0; resize:none;
+}
+.form-textarea { min-height:90px; }
+
+/* --- Footer --- */
+.footer {
+  border-top:1px solid var(--line);
+  background:var(--bg-2);
+  padding:56px 48px 40px;
+  display:grid; grid-template-columns:1fr 1fr 1fr;
+  gap:32px;
+}
+.footer-bottom {
+  margin-top:48px; padding-top:20px;
+  border-top:1px solid var(--line);
+  display:flex; justify-content:space-between;
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px; color:var(--ink-mute);
+  letter-spacing:0.2em; text-transform:uppercase;
+  grid-column:1/-1;
+}
+
+/* Tweaks */
+.tweaks-panel {
+  position:fixed; bottom:24px; right:24px; z-index:200;
+  background:rgba(16,15,13,0.96);
+  backdrop-filter:blur(12px);
+  border:1px solid var(--line-2);
+  padding:20px 22px;
+  width:260px;
+  display:none;
+}
+.tweaks-panel.open { display:block; }
+.tweaks-title {
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px; letter-spacing:0.22em; text-transform:uppercase;
+  color:var(--ink-mute); margin:0 0 16px;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.tweaks-close { background:none; border:none; color:var(--ink-mute); cursor:pointer; font-size:16px; padding:0; }
+.tweak-row { padding:12px 0; border-top:1px solid var(--line); }
+.tweak-label { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--ink-dim); letter-spacing:0.2em; text-transform:uppercase; display:block; margin-bottom:10px; }
+.swatch-row { display:flex; gap:8px; }
+.swatch {
+  width:24px; height:24px; border-radius:50%; border:1px solid var(--line-2);
+  cursor:pointer; padding:0; transition:outline 150ms;
+}
+.swatch.active { outline:2px solid var(--ink); outline-offset:2px; }
+.toggle-row { display:flex; gap:4px; }
+.tog-btn {
+  flex:1; padding:7px 8px;
+  background:transparent; border:1px solid var(--line-2);
+  color:var(--ink-mute); font-family:'JetBrains Mono',monospace;
+  font-size:9px; letter-spacing:0.14em; text-transform:uppercase; cursor:pointer;
+  transition:background 150ms, color 150ms;
+}
+.tog-btn.on { background:var(--ink); color:var(--bg); border-color:var(--ink); }
+</style>
+</head>
+<body class="noise">
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+const TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "#c65a3a",
+  "motion": true,
+  "font": "Epilogue",
+  "lang": "es"
+}/*EDITMODE-END*/;
+
+// ── Translations ─────────────────────────────────────────────────
+const I18N = {
+  es: {
+    // Nav
+    nav_index: 'Inicio', nav_works: 'Obras', nav_about: 'Biografía', nav_contact: 'Contacto',
+    // Landing
+    land_badge: 'En producción — Infancias desplazadas · 2026',
+    land_tagline: 'Artista visual que trabaja en la intersección entre performance, escenografía e imagen. Basada en Santiago.',
+    land_cta: 'Ver obras',
+    land_cta_sub: '— 09 seleccionadas',
+    land_index_label: 'Obras seleccionadas — índice',
+    // Portfolio
+    pf_works: 'Obras',
+    pf_statement: 'Declaración',
+    pf_about_work: 'Sobre la obra',
+    pf_research: 'Material de investigación / proceso',
+    pf_gallery: 'Galería',
+    pf_next: 'Siguiente obra →',
+    pf_year: 'Año', pf_discipline: 'Disciplina', pf_direction: 'Dirección', pf_venue: 'Lugar',
+    // About
+    about_eyebrow: 'Sobre mí — Paz Tobar Miranda',
+    about_heading: 'Construyo\necosistemas\ndonde dialogan\nmateria y\natmósfera.',
+    about_lede: 'Mi práctica es una exploración constante del territorio como experiencia identitaria.',
+    about_bio_1: 'Artista interdisciplinaria de Valparaíso, Chile (1984). Transita de manera fluida entre las artes visuales, el diseño escénico y la performance, construyendo ecosistemas donde la materia y la atmósfera dialogan y ponen en tensión la identidad y el territorio.',
+    about_bio_2: 'Su principal interés está en la fuerza expresiva de lo pictórico, el paisaje sonoro como recurso y discurso, y la acción que dibuja un gesto en el tiempo. Ha trabajado como maquilladora teatral en el Teatro Municipal de Santiago y desarrollado proyectos personales que integran diseño escénico, performance y video.',
+    about_bio_3: 'Entre sus proyectos destacan "Sirena de Niebla" (videodanza, 2025) e "Infancias Desplazadas" (performance, 2026), junto a su trabajo en cerámica contemporánea y diseño textil. Licenciada en Artes (PUCV), con diplomados en Escultura en Cerámica y Diseño Escénico.',
+    about_meta: 'Valparaíso, Chile · n. 1984 · Artista interdisciplinaria',
+    about_selected: 'Proyectos seleccionados',
+    about_education: 'Formación',
+    // Contact
+    contact_lets: ["Trabajemos", "juntas."],
+    contact_open: 'Abierta a comisiones, residencias\ny colaboraciones — 2026',
+    contact_get: 'Contáctame',
+    contact_email: 'Email', contact_ig: 'Instagram', contact_loc: 'Ubicación',
+    contact_location: 'Santiago, Chile',
+    contact_or: 'O envía un mensaje',
+    contact_name: 'Nombre', contact_email_label: 'Email', contact_msg: 'Mensaje',
+    contact_send: 'Enviar →',
+    contact_sent: 'Mensaje recibido — gracias.',
+    // Footer
+    foot_nav: 'Navegación', foot_socials: 'Redes',
+    foot_desc_1: 'Artista visual · Artes escénicas', foot_desc_2: 'Santiago, Chile',
+    // Works
+    work_kinds: {
+      infancias: 'Performance / instalación',
+      sirena: 'Teatro — diseño escénico',
+      etlamar: 'Teatro — diseño escénico',
+      resiste: 'Pieza de movimiento',
+      bitacoras: 'Performance devisada',
+      maquillaje: 'Maquillaje teatral',
+      dibujos: 'Dibujo',
+      ceramica: 'Escultura en cerámica',
+      fotografias: 'Fotografía',
+      otros: 'Colaboraciones',
+    },
+    // Statements / body per work
+    stmt: {
+      sirena: 'Un escenario suspendido entre la costa y el sueño — niebla, cuerda, y luz lejana.',
+      infancias: 'Los cuerpos cargan la memoria del lugar. Una performance que pregunta qué cargan los niños cuando les arrebatan el hogar.',
+      etlamar: 'Entre el sonido de la advertencia y el horizonte que se desvanece.',
+      resiste: 'La resistencia como forma. El movimiento como negación a la quietud.',
+      bitacoras: 'Un cuaderno vivo. Devisada en la frontera entre performance e instalación, Bitácoras es una bitácora escénica en movimiento.',
+      maquillaje: 'La cara como materia de transformación y tiempo.',
+      dibujos: 'Línea y gesto, el pensamiento en papel.',
+      ceramica: 'La arcilla como memoria del cuerpo y el territorio.',
+      fotografias: 'El instante capturado como huella.',
+      otros: 'Colaboraciones y trabajos en proceso.',
+    },
+    body: {
+      sirena: 'Sirena de niebla explora el objeto escenográfico como material vivo — la sirena re-imaginada no como figura del deseo sino como arquitectura de resistencia. Niebla, plástico y cuerda constituyen un entorno escénico donde la frontera entre el cuerpo humano y su entorno se disuelve. La obra se desarrolló en colaboración con el director M. Rivera y se estrenó en el Teatro NAVE, Santiago.',
+      sirena_2: 'La investigación visual — reunida en una bitácora hecha a mano — rastrea la historia de las bocinas de niebla, los fareros y la acústica de la advertencia costera. Material, sonido y cuerpo convergen en un solo gesto escénico.',
+      placeholder: '[Descripción de la obra: aproximadamente 150 palabras sobre el marco conceptual, el proceso de creación, los colaboradores clave y la relación entre los elementos visuales y performativos de esta pieza.]',
+    },
+    titles: {
+      infancias: 'Infancias desplazadas',
+      sirena: 'Sirena de niebla',
+      etlamar: 'Et la Mer',
+      resiste: 'Resiste',
+      bitacoras: 'Bitácoras',
+      maquillaje: 'Maquillaje',
+      dibujos: 'Dibujos',
+      ceramica: 'Cerámica',
+      fotografias: 'Fotografía',
+      otros: 'Colaboraciones',
+    },
+    res_rows: [
+      ['2025–26', 'Diplomado Diseño Escénico', 'Universidad de Chile'],
+      ['2023–24', 'Diplomado Escultura en Cerámica', 'Finis Terrae'],
+      ['2003–07', 'Licenciatura en Artes', 'PUCV'],
+      ['2013', 'Fondo CORFO emprendedores', 'Punto Aguayo (diseño textil)'],
+    ],
+  },
+  en: {
+    nav_index: 'Index', nav_works: 'Works', nav_about: 'About', nav_contact: 'Contact',
+    land_badge: 'Currently in production — Infancias desplazadas · 2026',
+    land_tagline: 'Visual artist working at the intersection of performance, scenography, and image. Based in Santiago.',
+    land_cta: 'View works', land_cta_sub: '— 09 selected',
+    land_index_label: 'Selected works — index',
+    pf_works: 'Works',
+    pf_statement: 'Statement',
+    pf_about_work: 'About the work',
+    pf_research: 'Research material / process',
+    pf_gallery: 'Gallery',
+    pf_next: 'Next work →',
+    pf_year: 'Year', pf_discipline: 'Discipline', pf_direction: 'Direction', pf_venue: 'Venue',
+    about_eyebrow: 'About — Paz Tobar Miranda',
+    about_heading: 'I build\necosystems\nwhere matter\nand atmosphere\nconverse.',
+    about_lede: 'My practice is a constant exploration of territory as an identity experience.',
+    about_bio_1: 'Interdisciplinary artist from Valparaíso, Chile (1984). She moves fluidly between visual arts, set design, and performance, building ecosystems where matter and atmosphere dialogue and put identity and territory in tension.',
+    about_bio_2: 'Her main interest lies in the expressive force of the pictorial, the soundscape as resource and discourse, and action that draws a gesture in time. She has worked as a theatrical makeup artist at the Teatro Municipal de Santiago and developed personal projects integrating set design, performance, and video.',
+    about_bio_3: 'Among her projects are "Sirena de Niebla" (videodance, 2025) and "Infancias Desplazadas" (performance, 2026), alongside her work in contemporary ceramics and textile design. BA in Arts (PUCV), with diplomas in Ceramic Sculpture and Set Design.',
+    about_meta: 'Valparaíso, Chile · b. 1984 · Interdisciplinary artist',
+    about_selected: 'Selected projects',
+    about_education: 'Education',
+    contact_lets: ["Let's", "work."],
+    contact_open: 'Open to commissions, residencies\nand collaborations — 2026',
+    contact_get: 'Get in touch',
+    contact_email: 'Email', contact_ig: 'Instagram', contact_loc: 'Location',
+    contact_location: 'Santiago, Chile',
+    contact_or: 'Or send a note',
+    contact_name: 'Name', contact_email_label: 'Email', contact_msg: 'Message',
+    contact_send: 'Send →',
+    contact_sent: 'Message received — thank you.',
+    foot_nav: 'Navigation', foot_socials: 'Socials',
+    foot_desc_1: 'Visual artist · Performing arts', foot_desc_2: 'Santiago, Chile',
+    work_kinds: {
+      infancias: 'Performance / installation',
+      sirena: 'Theatre — set design',
+      etlamar: 'Theatre — set design',
+      resiste: 'Movement piece',
+      bitacoras: 'Devised performance',
+      maquillaje: 'Theatrical makeup',
+      dibujos: 'Drawing',
+      ceramica: 'Ceramic sculpture',
+      fotografias: 'Photography',
+      otros: 'Collaborations',
+    },
+    stmt: {
+      sirena: 'A stage suspended between the coast and the dream — fog, rope, and distant light.',
+      infancias: 'Bodies carry the memory of place. A performance that asks what children carry when home is taken away.',
+      etlamar: 'Between the sound of warning and a horizon that dissolves.',
+      resiste: 'Resistance as form. Movement as the refusal to be still.',
+      bitacoras: 'A living notebook. Devised at the border of performance and installation, Bitácoras is a stage-journal in motion.',
+      maquillaje: 'The face as matter of transformation and time.',
+      dibujos: 'Line and gesture, thought on paper.',
+      ceramica: 'Clay as memory of body and territory.',
+      fotografias: 'The captured moment as trace.',
+      otros: 'Collaborations and work in progress.',
+    },
+    body: {
+      sirena: 'Sirena de niebla explores the scenographic object as a living material — the mermaid re-imagined not as a figure of desire but as an architecture of resistance. Fog, plastic sheeting, and rope constitute a stage environment where the boundary between the human body and its surroundings dissolves. The work was developed in collaboration with director M. Rivera and premiered at Teatro NAVE, Santiago.',
+      sirena_2: 'The visual research — gathered in a hand-made bitácora — traces the history of foghorns, lighthouse keepers, and the acoustics of coastal warning. Material, sound, and body converge in a single stage gesture.',
+      placeholder: '[Work description: approximately 150 words on the conceptual framework, process of creation, key collaborators, and the relationship between the visual and performative elements of this piece.]',
+    },
+    titles: {
+      infancias: 'Infancias desplazadas',
+      sirena: 'Sirena de niebla',
+      etlamar: 'Et la Mer',
+      resiste: 'Resiste',
+      bitacoras: 'Bitácoras',
+      maquillaje: 'Maquillaje',
+      dibujos: 'Dibujos',
+      ceramica: 'Cerámica',
+      fotografias: 'Fotografía',
+      otros: 'Colaboraciones',
+    },
+    res_rows: [
+      ['2025–26', 'Diploma in Set Design', 'Universidad de Chile'],
+      ['2023–24', 'Diploma in Ceramic Sculpture', 'Finis Terrae'],
+      ['2003–07', 'BA in Arts', 'PUCV'],
+      ['2013', 'CORFO Entrepreneurs Fund', 'Punto Aguayo (textile design)'],
+    ],
+  },
+};
+const LangContext = React.createContext({ lang:'es', t: I18N.es });
+function useLang() { return React.useContext(LangContext); }
+
+// ── Config ──────────────────────────────────────────────────────────────────
+const FORMSPREE_ID = 'YOUR_FORM_ID'; // Replace with your Formspree form ID (e.g. 'xpzvqklg')
+
+// ── Images ──────────────────────────────────────────────────────────────────
+const IMGS = {
+  sirena: [
+    'images/sirena-01.jpg',
+    'images/sirena-02.jpg',
+    'images/sirena-03.jpg',
+  ],
+  process: [
+    'images/sirena-bitacora-01.jpg',
+    'images/sirena-bitacora-02.jpg',
+    'images/sirena-bitacora-03.jpg',
+  ],
+};
+
+const WORKS = [
+  { id:'infancias',   num:'01', year:'2026', hero: IMGS.sirena[2] },
+  { id:'sirena',      num:'02', year:'2025', hero: IMGS.sirena[1] },
+  { id:'etlamar',     num:'03', year:'—',    hero: IMGS.process[0] },
+  { id:'resiste',     num:'04', year:'2023', hero: IMGS.sirena[0] },
+  { id:'bitacoras',   num:'05', year:'2025', hero: IMGS.process[2] },
+  { id:'maquillaje',  num:'06', year:'—',    hero: IMGS.process[1] },
+  { id:'dibujos',     num:'07', year:'—',    hero: IMGS.sirena[0] },
+  { id:'ceramica',    num:'08', year:'—',    hero: IMGS.process[0] },
+  { id:'fotografias', num:'09', year:'—',    hero: IMGS.sirena[2] },
+  { id:'otros',       num:'10', year:'—',    hero: IMGS.process[1] },
+];
+
+// ── Nav ──────────────────────────────────────────────────────────────────────
+function Nav({ page, setPage, tweaks, setTweaks }) {
+  const { lang, t } = useLang();
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const h = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', h, { passive: true });
+    return () => window.removeEventListener('scroll', h);
+  }, []);
+  const links = [['landing', t.nav_index],['portfolio', t.nav_works],['about', t.nav_about],['contact', t.nav_contact]];
+  return (
+    <nav className={`site-nav ${scrolled ? 'scrolled' : ''}`}>
+      <div className="brand" onClick={() => { setPage('landing'); window.scrollTo(0,0); }}>PAZ TOBAR</div>
+      <ul>
+        {links.map(([id, label]) => (
+          <li key={id}>
+            <a href="#" className={page === id ? 'is-active' : ''}
+               onClick={e => { e.preventDefault(); setPage(id); window.scrollTo(0,0); }}>
+              {label}
+            </a>
+          </li>
+        ))}
+        <li style={{ marginLeft: 'auto', display: 'flex', gap: 12 }}>
+          <button onClick={() => setTweaks({ ...tweaks, lang: 'es' })}
+            style={{ background: 'none', border: 'none', color: lang === 'es' ? 'var(--ink)' : 'var(--ink-dim)', cursor: 'pointer', fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', fontFamily: "'JetBrains Mono', monospace", transition: 'color 200ms' }}>
+            ES
+          </button>
+          <span style={{ color: 'var(--ink-dim)', fontSize: 10 }}>/</span>
+          <button onClick={() => setTweaks({ ...tweaks, lang: 'en' })}
+            style={{ background: 'none', border: 'none', color: lang === 'en' ? 'var(--ink)' : 'var(--ink-dim)', cursor: 'pointer', fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', fontFamily: "'JetBrains Mono', monospace", transition: 'color 200ms' }}>
+            EN
+          </button>
+        </li>
+      </ul>
+    </nav>
+  );
+}
+
+// ── Landing ──────────────────────────────────────────────────────────────────
+function Landing({ setPage, motion }) {
+  const { t } = useLang();
+  const slides = IMGS.sirena;
+  const [cur, setCur] = useState(0);
+
+  useEffect(() => {
+    if (!motion) return;
+    const iv = setInterval(() => setCur(c => (c + 1) % slides.length), 7000);
+    return () => clearInterval(iv);
+  }, [motion]);
+
+  const works_marquee = [...WORKS, ...WORKS].map((w, i) => (
+    <span key={i} className="marquee-item">
+      {t.titles[w.id]} <span>{w.year}</span>
+      <span className="marquee-divider" style={{ margin: '0 4px', opacity: 0.3 }}>✦</span>
+    </span>
+  ));
+
+  return (
+    <div>
+      {/* Hero */}
+      <div className="hero-wrap">
+        {slides.map((src, i) => (
+          <div key={i} className="hero-bg"
+            style={{
+              backgroundImage: `url(${src})`,
+              opacity: i === cur ? 1 : 0,
+              transition: motion ? 'opacity 1.6s ease-in-out' : 'none',
+            }} />
+        ))}
+        <div className="hero-overlay" />
+
+        <div className="hero-content">
+          <div style={{ marginBottom: 40 }}>
+            <div className="pill" style={{ marginBottom: 28 }}>
+              <span className="dot" />
+              {t.land_badge}
+            </div>
+            <h1 className="display" style={{ fontSize: 'clamp(96px, 16vw, 240px)', margin: 0, lineHeight: 0.87 }}>
+              PAZ<br/>TOBAR
+            </h1>
+            <p style={{ fontSize: 17, lineHeight: 1.5, color: 'var(--ink-dim)', margin: '28px 0 0', maxWidth: '44ch' }}>
+              {t.land_tagline}
+            </p>
+          </div>
+
+          <div className="hero-meta-bar">
+            <button className="btn" onClick={() => { setPage('portfolio'); window.scrollTo(0,0); }}
+              style={{ marginTop: 0 }}>
+              {t.land_cta} <span style={{ opacity:0.5 }}>{t.land_cta_sub}</span>
+            </button>
+            <div className="slide-dots">
+              {slides.map((_, i) => (
+                <button key={i} className={`slide-dot ${i === cur ? 'is-active' : ''}`}
+                  onClick={() => setCur(i)} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Marquee */}
+      <div className="marquee-strip">
+        <div className="marquee-inner" style={{ animationDuration: motion ? '70s' : '0s', animationPlayState: motion ? 'running' : 'paused' }}>
+          {works_marquee}
+        </div>
+      </div>
+
+      {/* Works index list below hero */}
+      <div style={{ padding: '80px 48px 40px', borderBottom: '1px solid var(--line)' }}>
+        <div className="eyebrow mute" style={{ marginBottom: 32 }}>{t.land_index_label}</div>
+        {WORKS.filter(w => w.id !== 'otros').map(w => (
+          <div key={w.id}
+            onClick={() => { setPage('portfolio'); window.scrollTo(0,0); }}
+            style={{
+              display: 'grid', gridTemplateColumns: '40px 1fr auto auto',
+              gap: 28, padding: '20px 0',
+              borderBottom: '1px solid var(--line)',
+              alignItems: 'baseline', cursor: 'pointer',
+            }}
+            onMouseEnter={e => e.currentTarget.style.opacity = '0.7'}
+            onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+          >
+            <span className="mono" style={{ fontSize: 10, color: 'var(--ink-mute)', letterSpacing: '0.2em' }}>{w.num}</span>
+            <span style={{ fontSize: 22, letterSpacing: '-0.01em' }}>{t.titles[w.id]}</span>
+            <span className="mono" style={{ fontSize: 10, color: 'var(--ink-mute)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>{t.work_kinds[w.id]}</span>
+            <span className="mono" style={{ fontSize: 11, color: 'var(--ink-dim)' }}>{w.year}</span>
+          </div>
+        ))}
+      </div>
+
+      <SiteFooter setPage={setPage} />
+    </div>
+  );
+}
+
+// ── Portfolio ─────────────────────────────────────────────────────────────────
+function Portfolio({ motion }) {
+  const { t } = useLang();
+  const [activeId, setActiveId] = useState(() => localStorage.getItem('pt.work') || 'sirena');
+  useEffect(() => { localStorage.setItem('pt.work', activeId); }, [activeId]);
+  const work = WORKS.find(w => w.id === activeId) || WORKS[1];
+
+  return (
+    <div style={{ paddingTop: 0 }}>
+      <div className="pf-grid">
+        {/* Sidebar */}
+        <aside className="pf-sidebar">
+          <div className="pf-sidebar-head">
+            <div className="eyebrow mute" style={{ marginBottom: 10 }}>{t.pf_works}</div>
+            <div style={{ fontSize: 28, fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1 }}>PAZ<br/>TOBAR</div>
+          </div>
+          {WORKS.map(w => (
+            <div key={w.id}
+              className={`work-item ${w.id === activeId ? 'is-active' : ''}`}
+              onClick={() => { setActiveId(w.id); window.scrollTo(0,0); }}
+            >
+              <div className="work-num">{w.num} — {w.year}</div>
+              <div className="work-title">{t.titles[w.id]}</div>
+              <div className="work-year">{t.work_kinds[w.id]}</div>
+            </div>
+          ))}
+          <div style={{ padding: '24px 28px', marginTop: 'auto', borderTop: '1px solid var(--line)' }}>
+            <div className="mono" style={{ fontSize: 9, color: 'var(--ink-mute)', letterSpacing: '0.22em', textTransform: 'uppercase', lineHeight: 2 }}>
+              <a href="#" style={{ color: 'inherit', textDecoration: 'none', display: 'block' }}>↗ instagram.com/paztobarmiranda</a>
+              <a href="mailto:ptobarmiranda@gmail.com" style={{ color: 'inherit', textDecoration: 'none', display: 'block' }}>↗ ptobarmiranda@gmail.com</a>
+            </div>
+          </div>
+        </aside>
+
+        {/* Case study */}
+        <CaseStudy work={work} motion={motion} />
+      </div>
+    </div>
+  );
+}
+
+function CaseStudy({ work, motion }) {
+  const { t } = useLang();
+  const isSirena = work.id === 'sirena';
+  const imgs = isSirena ? IMGS.sirena : IMGS.process;
+  const title = t.titles[work.id];
+  const kind = t.work_kinds[work.id];
+
+  return (
+    <div className="case-study">
+      {/* Hero */}
+      <div className="case-hero">
+        <div className="case-hero-img" style={{ backgroundImage: `url(${work.hero})` }} />
+        <div className="case-hero-overlay" />
+        <div className="case-hero-text">
+          <div className="eyebrow accent" style={{ marginBottom: 18 }}>
+            {work.num} — {work.year} — {kind}
+          </div>
+          <h1 className="display" style={{ fontSize: 'clamp(72px, 9vw, 152px)', margin: 0 }}>
+            {title.includes(' ') ? (
+              <>
+                {title.split(' ').slice(0, Math.ceil(title.split(' ').length / 2)).join(' ')}<br/>
+                {title.split(' ').slice(Math.ceil(title.split(' ').length / 2)).join(' ')}
+              </>
+            ) : title}
+          </h1>
+        </div>
+      </div>
+
+      {/* Meta */}
+      <div className="case-meta-grid">
+        {[
+          [t.pf_year, work.year],
+          [t.pf_discipline, kind],
+          [t.pf_direction, work.id === 'sirena' ? 'M. Rivera' : '—'],
+          [t.pf_venue, work.id === 'sirena' ? 'Teatro NAVE' : work.id === 'bitacoras' ? 'Matucana 100' : work.id === 'resiste' ? 'Teatro del Puente' : '—'],
+        ].map(([k, v]) => (
+          <div key={k} className="case-meta-cell">
+            <div className="case-meta-label">{k}</div>
+            <div className="case-meta-value">{v}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Statement + body */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, padding: '72px 56px', borderBottom: '1px solid var(--line)' }}>
+        <div>
+          <div className="eyebrow mute" style={{ marginBottom: 20 }}>{t.pf_statement}</div>
+          <p style={{ fontSize: 26, lineHeight: 1.35, margin: 0, letterSpacing: '-0.01em' }}>
+            {t.stmt[work.id] || t.stmt.otros}
+          </p>
+        </div>
+        <div>
+          <div className="eyebrow mute" style={{ marginBottom: 20 }}>{t.pf_about_work}</div>
+          <p style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--ink-dim)', margin: 0 }}>
+            {t.body[work.id] || t.body.placeholder}
+          </p>
+          {work.id === 'sirena' && (
+            <p style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--ink-dim)', marginTop: 20 }}>
+              {t.body.sirena_2}
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Process image (wide) */}
+      {(isSirena || work.id === 'bitacoras') && (
+        <div style={{ padding: '0 0', borderBottom: '1px solid var(--line)' }}>
+          <div style={{ height: 500, backgroundImage: `url(${imgs[2]})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'grayscale(0.1)' }} />
+          <div style={{ padding: '16px 56px' }}>
+            <div className="eyebrow mute">{t.pf_research}</div>
+          </div>
+        </div>
+      )}
+
+      {/* Gallery */}
+      <div style={{ padding: '56px 56px 0', borderBottom: '1px solid var(--line)' }}>
+        <div className="eyebrow mute" style={{ marginBottom: 24 }}>{t.pf_gallery}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 3, marginBottom: 3 }}>
+          <div className="gallery-img" style={{ backgroundImage: `url(${imgs[0]})`, aspectRatio: '16/9' }} />
+          <div className="gallery-img" style={{ backgroundImage: `url(${imgs[1]})`, aspectRatio: '16/9' }} />
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 3 }}>
+          {imgs.map((src, i) => (
+            <div key={i} className="gallery-img" style={{ backgroundImage: `url(${src})`, aspectRatio: '4/3' }} />
+          ))}
+        </div>
+      </div>
+
+      <div style={{ padding: '48px 56px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="eyebrow mute">{t.pf_next}</div>
+        <div style={{ fontSize: 36, fontWeight: 700, letterSpacing: '-0.02em' }}>
+          {t.titles[WORKS[(WORKS.findIndex(w => w.id === work.id) + 1) % WORKS.length].id]}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── About ─────────────────────────────────────────────────────────────────────
+function About({ setPage }) {
+  const { t } = useLang();
+  return (
+    <div style={{ paddingTop: 80 }}>
+      {/* Statement */}
+      <div className="about-statement">
+        <div className="eyebrow mute" style={{ marginBottom: 24 }}>{t.about_eyebrow}</div>
+        <h1 className="display" style={{ fontSize: 'clamp(64px, 10vw, 148px)', margin: 0, maxWidth: '18ch' }}>
+          {t.about_heading.split('\n').map((line, i, arr) => (
+            <React.Fragment key={i}>{line}{i < arr.length - 1 && <br/>}</React.Fragment>
+          ))}
+        </h1>
+      </div>
+
+      {/* Bio + portrait */}
+      <div className="about-body">
+        <div>
+          <p style={{ fontSize: 24, lineHeight: 1.4, margin: 0, letterSpacing: '-0.01em', maxWidth: '30ch' }}>
+            {t.about_lede}
+          </p>
+          <p style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--ink-dim)', marginTop: 32, maxWidth: '55ch' }}>
+            {t.about_bio_1}
+          </p>
+          <p style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--ink-dim)', marginTop: 20, maxWidth: '55ch' }}>
+            {t.about_bio_2}
+          </p>
+          <p style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--ink-dim)', marginTop: 20, maxWidth: '55ch' }}>
+            {t.about_bio_3}
+          </p>
+        </div>
+        <div>
+          <div style={{ height: 580, backgroundImage: `url(${IMGS.sirena[1]})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'grayscale(0.2) contrast(1.05)' }} />
+          <div className="mono" style={{ fontSize: 10, color: 'var(--ink-mute)', letterSpacing: '0.18em', marginTop: 12 }}>
+            {t.about_meta}
+          </div>
+        </div>
+      </div>
+
+      {/* Resume */}
+      <div style={{ padding: '0 48px 80px', borderTop: '1px solid var(--line)' }}>
+        <div className="eyebrow mute" style={{ padding: '40px 0 24px' }}>{t.about_selected}</div>
+        {WORKS.filter(w => w.id !== 'otros').map(w => (
+          <div key={w.id} className="resume-row">
+            <span className="mono" style={{ fontSize: 11, color: 'var(--ink-dim)' }}>{w.year}</span>
+            <span style={{ fontSize: 18, letterSpacing: '-0.01em' }}>{t.titles[w.id]}</span>
+            <span className="mono" style={{ fontSize: 11, color: 'var(--ink-mute)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{t.work_kinds[w.id]}</span>
+          </div>
+        ))}
+
+        <div className="eyebrow mute" style={{ padding: '52px 0 24px' }}>{t.about_education}</div>
+        {t.res_rows.map(([y, label, venue]) => (
+          <div key={label} className="resume-row">
+            <span className="mono" style={{ fontSize: 11, color: 'var(--ink-dim)' }}>{y}</span>
+            <span style={{ fontSize: 18, letterSpacing: '-0.01em' }}>{label}</span>
+            <span className="mono" style={{ fontSize: 11, color: 'var(--ink-mute)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{venue}</span>
+          </div>
+        ))}
+      </div>
+
+      <SiteFooter setPage={setPage} />
+    </div>
+  );
+}
+
+// ── Contact ───────────────────────────────────────────────────────────────────
+function Contact() {
+  const { lang, t } = useLang();
+  const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSending(true);
+    setError(null);
+    const data = new FormData(e.target);
+    try {
+      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' },
+      });
+      if (res.ok) { setSent(true); }
+      else { setError(lang === 'es' ? 'Error al enviar. Intenta de nuevo.' : 'Failed to send. Please try again.'); }
+    } catch {
+      setError(lang === 'es' ? 'Error de conexión.' : 'Connection error.');
+    }
+    setSending(false);
+  };
+
+  return (
+    <div style={{ paddingTop: 80 }}>
+      <div className="contact-grid">
+        <div className="contact-img"
+          style={{ backgroundImage: `url(${IMGS.sirena[2]})`, minHeight: 600 }}>
+          <div className="contact-img-overlay" />
+          <div style={{ position: 'absolute', left: 48, bottom: 48 }}>
+            <div className="display" style={{ fontSize: 80, lineHeight: 0.9 }}>
+              {t.contact_lets[0]}<br/>{t.contact_lets[1]}
+            </div>
+            <div className="mono" style={{ fontSize: 10, color: 'var(--ink-dim)', letterSpacing: '0.22em', textTransform: 'uppercase', marginTop: 20, whiteSpace: 'pre-line' }}>
+              {t.contact_open}
+            </div>
+          </div>
+        </div>
+
+        <div className="contact-form">
+          <div className="eyebrow mute" style={{ marginBottom: 32 }}>{t.contact_get}</div>
+
+          <div className="contact-links">
+            {[
+              [t.contact_email, 'ptobarmiranda@gmail.com', 'mailto:ptobarmiranda@gmail.com'],
+              [t.contact_ig, '@paztobarmiranda', 'https://instagram.com/paztobarmiranda'],
+              [t.contact_loc, t.contact_location, null],
+            ].map(([k, v, href]) => (
+              <div key={k} className="contact-link-row">
+                <span className="contact-link-key">{k}</span>
+                {href
+                  ? <a href={href} className="contact-link-val">{v}</a>
+                  : <span className="contact-link-val">{v}</span>}
+              </div>
+            ))}
+          </div>
+
+          <div className="eyebrow mute" style={{ marginBottom: 0 }}>{t.contact_or}</div>
+
+          {sent ? (
+            <div style={{ padding: '48px 0', fontSize: 22, color: 'var(--accent)' }}>
+              {t.contact_sent}
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <div className="form-field">
+                <label className="form-label">{t.contact_name}</label>
+                <input className="form-input" name="name" required placeholder="" />
+              </div>
+              <div className="form-field">
+                <label className="form-label">{t.contact_email_label}</label>
+                <input className="form-input" name="email" type="email" required placeholder="" />
+              </div>
+              <div className="form-field">
+                <label className="form-label">{t.contact_msg}</label>
+                <textarea className="form-textarea" name="message" required />
+              </div>
+              {error && <div style={{ color: 'var(--accent)', fontSize: 13, marginTop: 12 }}>{error}</div>}
+              <button type="submit" className="btn" style={{ marginTop: 28, opacity: sending ? 0.5 : 1 }} disabled={sending}>
+                {sending ? '...' : t.contact_send}
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Footer ────────────────────────────────────────────────────────────────────
+function SiteFooter({ setPage }) {
+  const { t } = useLang();
+  return (
+    <footer className="footer">
+      <div>
+        <div style={{ fontSize: 28, fontWeight: 700, letterSpacing: '-0.01em', marginBottom: 16 }}>PAZ TOBAR</div>
+        <div className="mono" style={{ fontSize: 10, color: 'var(--ink-mute)', letterSpacing: '0.18em', lineHeight: 2 }}>
+          {t.foot_desc_1}<br/>{t.foot_desc_2}
+        </div>
+      </div>
+      <div>
+        <div className="eyebrow mute" style={{ marginBottom: 16 }}>{t.foot_nav}</div>
+        {[[t.nav_works, 'portfolio'],[t.nav_about, 'about'],[t.nav_contact, 'contact']].map(([l,id]) => (
+          <div key={id} style={{ paddingBottom: 8 }}>
+            <a href="#" onClick={e => { e.preventDefault(); setPage(id); window.scrollTo(0,0); }}
+               style={{ fontSize: 15, color: 'var(--ink-dim)', textDecoration: 'none' }}>{l}</a>
+          </div>
+        ))}
+      </div>
+      <div>
+        <div className="eyebrow mute" style={{ marginBottom: 16 }}>{t.foot_socials}</div>
+        <div style={{ paddingBottom: 8 }}>
+          <a href="https://instagram.com/paztobarmiranda" style={{ fontSize: 15, color: 'var(--ink-dim)', textDecoration: 'none' }}>Instagram ↗</a>
+        </div>
+        <div>
+          <a href="mailto:ptobarmiranda@gmail.com" style={{ fontSize: 15, color: 'var(--ink-dim)', textDecoration: 'none' }}>ptobarmiranda@gmail.com</a>
+        </div>
+      </div>
+      <div className="footer-bottom">
+        <span>© 2026 Paz Tobar Miranda — paztobar.com</span>
+        <span>{t.foot_desc_2}</span>
+      </div>
+    </footer>
+  );
+}
+
+// ── Tweaks ────────────────────────────────────────────────────────────────────
+function TweaksPanel({ tweaks, setTweaks }) {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.data?.type === '__activate_edit_mode')   setOpen(true);
+      if (e.data?.type === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', handler);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', handler);
+  }, []);
+
+  const set = (key, val) => {
+    const next = { ...tweaks, [key]: val };
+    setTweaks(next);
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits: next }, '*');
+  };
+
+  const accents = ['#d9c9a8','#c65a3a','#a8b9c9','#8a6f4e','#c4c9a8'];
+
+  return (
+    <div className={`tweaks-panel ${open ? 'open' : ''}`}>
+      <div className="tweaks-title">
+        Tweaks
+        <button className="tweaks-close" onClick={() => setOpen(false)}>×</button>
+      </div>
+
+      <div className="tweak-row">
+        <label className="tweak-label">Accent color</label>
+        <div className="swatch-row">
+          {accents.map(c => (
+            <button key={c} className={`swatch ${tweaks.accent === c ? 'active' : ''}`}
+              style={{ background: c }}
+              onClick={() => set('accent', c)} />
+          ))}
+        </div>
+      </div>
+
+      <div className="tweak-row">
+        <label className="tweak-label">Motion</label>
+        <div className="toggle-row">
+          <button className={`tog-btn ${tweaks.motion ? 'on' : ''}`} onClick={() => set('motion', true)}>On</button>
+          <button className={`tog-btn ${!tweaks.motion ? 'on' : ''}`} onClick={() => set('motion', false)}>Off</button>
+        </div>
+      </div>
+
+      <div className="tweak-row">
+        <label className="tweak-label">Language</label>
+        <div className="toggle-row">
+          <button className={`tog-btn ${(tweaks.lang || 'es') === 'es' ? 'on' : ''}`} onClick={() => set('lang', 'es')}>ES</button>
+          <button className={`tog-btn ${tweaks.lang === 'en' ? 'on' : ''}`} onClick={() => set('lang', 'en')}>EN</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── App ───────────────────────────────────────────────────────────────────────
+function App() {
+  const [page, setPage] = useState(() => localStorage.getItem('pt.page2') || 'landing');
+  const [tweaks, setTweaks] = useState(() => {
+    try { const s = JSON.parse(localStorage.getItem('pt.tweaks2')); return s || TWEAKS_DEFAULTS; }
+    catch { return TWEAKS_DEFAULTS; }
+  });
+
+  useEffect(() => { localStorage.setItem('pt.page2', page); }, [page]);
+  useEffect(() => {
+    localStorage.setItem('pt.tweaks2', JSON.stringify(tweaks));
+    document.documentElement.style.setProperty('--accent', tweaks.accent);
+    document.documentElement.style.setProperty('--font-body', 'Epilogue, sans-serif');
+    document.documentElement.style.setProperty('--font-display', 'Epilogue, sans-serif');
+    document.documentElement.style.setProperty('--font-display-weight', '700');
+    document.documentElement.style.setProperty('--font-body-weight', '400');
+    document.body.classList.toggle('motion-off', !tweaks.motion);
+    document.documentElement.lang = tweaks.lang || 'es';
+  }, [tweaks]);
+
+  const lang = tweaks.lang || 'es';
+  const t = I18N[lang] || I18N.es;
+
+  return (
+    <LangContext.Provider value={{ lang, t }}>
+      <Nav page={page} setPage={setPage} tweaks={tweaks} setTweaks={setTweaks} />
+      <div style={{ opacity: 1, transition: 'opacity 300ms' }}>
+        {page === 'landing'   && <Landing setPage={setPage} motion={tweaks.motion} />}
+        {page === 'portfolio' && <Portfolio motion={tweaks.motion} />}
+        {page === 'about'     && <About setPage={setPage} />}
+        {page === 'contact'   && <Contact />}
+      </div>
+      <TweaksPanel tweaks={tweaks} setTweaks={setTweaks} />
+    </LangContext.Provider>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
