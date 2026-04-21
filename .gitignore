@@ -1,6 +1,4 @@
-node_modules/
-build/
-.svelte-kit/
-.env
-.env.*
-!.env.example
+.DS_Store
+*.swp
+.claude
+node_modules
