@@ -546,6 +546,29 @@ const IMGS = {
     'images/sirena-bitacora-02.jpg',
     'images/sirena-bitacora-03.jpg',
   ],
+  dibujos: [
+    'images/obras/dibujos/portada.webp',
+    'images/obras/dibujos/autoretrato-01.webp',
+    'images/obras/dibujos/autoretrato-02.webp',
+    'images/obras/dibujos/autoretrato-04.webp',
+    'images/obras/dibujos/autoretrato-05.webp',
+    'images/obras/dibujos/autoretrato-06.webp',
+    'images/obras/dibujos/el-grito-el-grito-el-grito.webp',
+    'images/obras/dibujos/familia.webp',
+    'images/obras/dibujos/flores-amarillas.webp',
+    'images/obras/dibujos/luna.webp',
+    'images/obras/dibujos/maestra-vida.webp',
+    'images/obras/dibujos/mama.webp',
+    'images/obras/dibujos/miguel-barrios.webp',
+    'images/obras/dibujos/milicos.webp',
+    'images/obras/dibujos/mujer-de-kao.webp',
+    'images/obras/dibujos/mujer-yamana.webp',
+    'images/obras/dibujos/mujer.webp',
+    'images/obras/dibujos/multitud.webp',
+    'images/obras/dibujos/valparaiso.webp',
+    'images/obras/dibujos/vera.webp',
+    'images/obras/dibujos/violeta.webp',
+  ],
 };
 
 const WORKS = [
@@ -555,7 +578,7 @@ const WORKS = [
   { id:'resiste',     num:'04', year:'2023', hero: IMGS.sirena[0] },
   { id:'bitacoras',   num:'05', year:'2025', hero: IMGS.process[2] },
   { id:'maquillaje',  num:'06', year:'—',    hero: IMGS.process[1] },
-  { id:'dibujos',     num:'07', year:'—',    hero: IMGS.sirena[0] },
+  { id:'dibujos',     num:'07', year:'—',    hero: IMGS.dibujos[0] },
   { id:'ceramica',    num:'08', year:'—',    hero: IMGS.process[0] },
   { id:'fotografias', num:'09', year:'—',    hero: IMGS.sirena[2] },
   { id:'otros',       num:'10', year:'—',    hero: IMGS.process[1] },
@@ -740,7 +763,7 @@ function Portfolio({ motion }) {
 function CaseStudy({ work, motion }) {
   const { t } = useLang();
   const isSirena = work.id === 'sirena';
-  const imgs = isSirena ? IMGS.sirena : IMGS.process;
+  const imgs = IMGS[work.id] ?? (isSirena ? IMGS.sirena : IMGS.process);
   const title = t.titles[work.id];
   const kind = t.work_kinds[work.id];
 
@@ -814,10 +837,12 @@ function CaseStudy({ work, motion }) {
       {/* Gallery */}
       <div style={{ padding: '56px 56px 0', borderBottom: '1px solid var(--line)' }}>
         <div className="eyebrow mute" style={{ marginBottom: 24 }}>{t.pf_gallery}</div>
+        {/* 
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 3, marginBottom: 3 }}>
           <div className="gallery-img" style={{ backgroundImage: `url(${imgs[0]})`, aspectRatio: '16/9' }} />
           <div className="gallery-img" style={{ backgroundImage: `url(${imgs[1]})`, aspectRatio: '16/9' }} />
-        </div>
+        </div> 
+        */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 3 }}>
           {imgs.map((src, i) => (
             <div key={i} className="gallery-img" style={{ backgroundImage: `url(${src})`, aspectRatio: '4/3' }} />
