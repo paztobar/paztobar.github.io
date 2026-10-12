@@ -363,7 +363,7 @@ const I18N = {
     land_badge: 'En producción — Infancias desplazadas · 2026',
     land_tagline: 'Artista visual que trabaja en la intersección entre performance, escenografía e imagen. Basada en Santiago.',
     land_cta: 'Ver obras',
-    land_cta_sub: '— 09 seleccionadas',
+    land_cta_sub: '— 05 seleccionadas',
     land_index_label: 'Obras seleccionadas — índice',
     // Portfolio
     pf_works: 'Obras',
@@ -398,6 +398,7 @@ const I18N = {
     foot_desc_1: 'Artista visual · Artes escénicas', foot_desc_2: 'Santiago, Chile',
     // Works
     work_kinds: {
+      sujeto: 'En producción',
       infancias: 'Performance / instalación',
       sirena: 'Teatro — diseño escénico',
       etlamar: 'Teatro — diseño escénico',
@@ -428,6 +429,7 @@ const I18N = {
       placeholder: '[Descripción de la obra: aproximadamente 150 palabras sobre el marco conceptual, el proceso de creación, los colaboradores clave y la relación entre los elementos visuales y performativos de esta pieza.]',
     },
     titles: {
+      sujeto: 'Sujeto',
       infancias: 'Infancias desplazadas',
       sirena: 'Sirena de niebla',
       etlamar: 'Et la Mer',
@@ -450,7 +452,7 @@ const I18N = {
     nav_index: 'Index', nav_works: 'Works', nav_about: 'About', nav_contact: 'Contact',
     land_badge: 'Currently in production — Infancias desplazadas · 2026',
     land_tagline: 'Visual artist working at the intersection of performance, scenography, and image. Based in Santiago.',
-    land_cta: 'View works', land_cta_sub: '— 09 selected',
+    land_cta: 'View works', land_cta_sub: '— 05 selected',
     land_index_label: 'Selected works — index',
     pf_works: 'Works',
     pf_statement: 'Statement',
@@ -480,6 +482,7 @@ const I18N = {
     foot_nav: 'Navigation', foot_socials: 'Socials',
     foot_desc_1: 'Visual artist · Performing arts', foot_desc_2: 'Santiago, Chile',
     work_kinds: {
+      sujeto: 'In production',
       infancias: 'Performance / installation',
       sirena: 'Theatre — set design',
       etlamar: 'Theatre — set design',
@@ -509,6 +512,7 @@ const I18N = {
       placeholder: '[Work description: approximately 150 words on the conceptual framework, process of creation, key collaborators, and the relationship between the visual and performative elements of this piece.]',
     },
     titles: {
+      sujeto: 'Sujeto',
       infancias: 'Infancias desplazadas',
       sirena: 'Sirena de niebla',
       etlamar: 'Et la Mer',
@@ -572,16 +576,11 @@ const IMGS = {
 };
 
 const WORKS = [
-  { id:'infancias',   num:'01', year:'2026', hero: IMGS.sirena[2] },
-  { id:'sirena',      num:'02', year:'2025', hero: IMGS.sirena[1] },
-  { id:'etlamar',     num:'03', year:'—',    hero: IMGS.process[0] },
+  { id:'sujeto',      num:'01', year:'2026', hero: IMGS.process[1] },
+  { id:'infancias',   num:'02', year:'2026', hero: IMGS.sirena[2] },
+  { id:'sirena',      num:'03', year:'2025', hero: IMGS.sirena[1] },
   { id:'resiste',     num:'04', year:'2023', hero: IMGS.sirena[0] },
-  { id:'bitacoras',   num:'05', year:'2025', hero: IMGS.process[2] },
-  { id:'maquillaje',  num:'06', year:'—',    hero: IMGS.process[1] },
-  { id:'dibujos',     num:'07', year:'—',    hero: IMGS.dibujos[0] },
-  { id:'ceramica',    num:'08', year:'—',    hero: IMGS.process[0] },
-  { id:'fotografias', num:'09', year:'—',    hero: IMGS.sirena[2] },
-  { id:'otros',       num:'10', year:'—',    hero: IMGS.process[1] },
+  { id:'etlamar',     num:'05', year:'2021', hero: IMGS.process[0] },
 ];
 
 // ── Nav ──────────────────────────────────────────────────────────────────────
